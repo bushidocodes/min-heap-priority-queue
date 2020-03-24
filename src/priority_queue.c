@@ -47,6 +47,7 @@ static inline void priority_queue_percolate_up(struct priority_queue *self) {
  * Returns the index of a node's smallest child
  * @param self the priority queue
  * @param parent_index
+ * @returns the index of the smallest child
  */
 static inline int
 priority_queue_find_smallest_child(struct priority_queue *self,
@@ -72,7 +73,7 @@ priority_queue_find_smallest_child(struct priority_queue *self,
 }
 
 /**
- * Shifts the top of the heap downwares. Used after placing the last value at
+ * Shifts the top of the heap downwards. Used after placing the last value at
  * the top
  * @param self the priority queue
  */
@@ -80,22 +81,21 @@ static inline void priority_queue_percolate_down(struct priority_queue *self) {
   assert(self != NULL);
 
   int parent_index = 1;
-  printf("Parent Index: %d", parent_index);
   int left_child_index = 2 * parent_index;
   while (left_child_index >= 2 && left_child_index < self->first_free) {
     int smallest_child_index =
         priority_queue_find_smallest_child(self, parent_index);
-    //   // Once the parent is equal to or less than its smallest child, break;
-    //   if (self->comparator(self->items[parent_index],
-    //                        self->items[smallest_child_index]) <= 0)
-    //     break;
-    //   // Otherwise, swap and continue down the tree
-    //   void *temp = self->items[smallest_child_index];
-    //   self->items[smallest_child_index] = self->items[parent_index];
-    //   self->items[parent_index] = temp;
+    // Once the parent is equal to or less than its smallest child, break;
+    if (self->comparator(self->items[parent_index],
+                         self->items[smallest_child_index]) <= 0)
+      break;
+    // Otherwise, swap and continue down the tree
+    void *temp = self->items[smallest_child_index];
+    self->items[smallest_child_index] = self->items[parent_index];
+    self->items[parent_index] = temp;
 
     parent_index = smallest_child_index;
-    int left_child_index = 2 * parent_index;
+    left_child_index = 2 * parent_index;
   }
 }
 
@@ -155,9 +155,7 @@ void *priority_queue_dequeue(struct priority_queue *self) {
   void *min = self->items[1];
   self->items[1] = self->items[self->first_free - 1];
   self->items[self->first_free - 1] = NULL;
-  printf("%d\n", self->first_free);
   self->first_free--;
-  printf("%d\n", self->first_free);
   assert(self->first_free == 1 || self->items[self->first_free - 1] != NULL);
   // Because of 1-based indices, first_free is 2 when there is only one element
   if (self->first_free > 2)

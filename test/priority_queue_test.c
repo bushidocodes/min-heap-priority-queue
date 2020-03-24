@@ -120,25 +120,25 @@ void priority_queue_should_return_in_priority_order() {
   assert(pq.items[5] == sandbox_9);
   assert(priority_queue_dequeue(&pq) == sandbox_2);
   free(sandbox_2);
-  // assert(pq.items[1] == sandbox_5);
-  // assert(pq.items[2] == sandbox_9);
-  // assert(pq.items[3] == sandbox_7);
-  // assert(pq.items[4] == sandbox_11);
+  assert(pq.items[1] == sandbox_5);
+  assert(pq.items[2] == sandbox_9);
+  assert(pq.items[3] == sandbox_7);
+  assert(pq.items[4] == sandbox_11);
   assert(priority_queue_dequeue(&pq) == sandbox_5);
-  // free(sandbox_5);
-  // assert(pq.items[1] == sandbox_7);
-  // assert(pq.items[2] == sandbox_9);
-  // assert(pq.items[3] == sandbox_11);
-  // assert(priority_queue_dequeue(&pq) == sandbox_7);
-  // free(sandbox_7);
-  // assert(pq.items[1] == sandbox_9);
-  // assert(pq.items[2] == sandbox_11);
-  // assert(priority_queue_dequeue(&pq) == sandbox_9);
-  // free(sandbox_9);
-  // assert(pq.items[1] == sandbox_11);
-  // assert(priority_queue_dequeue(&pq) == sandbox_11);
-  // free(sandbox_11);
-  // assert(priority_queue_dequeue(&pq) == NULL);
+  free(sandbox_5);
+  assert(pq.items[1] == sandbox_7);
+  assert(pq.items[2] == sandbox_9);
+  assert(pq.items[3] == sandbox_11);
+  assert(priority_queue_dequeue(&pq) == sandbox_7);
+  free(sandbox_7);
+  assert(pq.items[1] == sandbox_9);
+  assert(pq.items[2] == sandbox_11);
+  assert(priority_queue_dequeue(&pq) == sandbox_9);
+  free(sandbox_9);
+  assert(pq.items[1] == sandbox_11);
+  assert(priority_queue_dequeue(&pq) == sandbox_11);
+  free(sandbox_11);
+  assert(priority_queue_dequeue(&pq) == NULL);
 }
 
 int main(void) {
