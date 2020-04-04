@@ -1,6 +1,10 @@
 CC=clang
 INC=./include/
-OPTFLAGS = 
+OPTFLAGS = -g
+
+ASANFLAGS  = -fsanitize=address
+ASANFLAGS += -fno-common
+ASANFLAGS += -fno-omit-frame-pointer
 
 default: test
 
@@ -10,3 +14,13 @@ test: clean
 	@./bin/test
 clean:
 	@if [ -f bin/test ] ; then rm bin/test; fi
+
+.PHONY: memcheck
+memcheck: test/*.c src/*.c
+	@mkdir -p ./build
+	@$(CC) $(ASANFLAGS) $(OPTFLAGS) -I$(INC) test/*.c test/vendor/*.c src/*.c -o build/memcheck.out $(LIBS)
+	@./build/memcheck.out
+	@echo "Memory check passed"
+
+format:
+	@clang-format -style=file -i src/* include/*
