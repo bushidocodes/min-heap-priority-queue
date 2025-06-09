@@ -17,9 +17,9 @@ clean:
 
 .PHONY: memcheck
 memcheck: test/*.c src/*.c
-	@mkdir -p ./build
-	@$(CC) $(ASANFLAGS) $(OPTFLAGS) -I$(INC) test/*.c test/vendor/*.c src/*.c -o build/memcheck.out $(LIBS)
-	@./build/memcheck.out
+	@mkdir -p ./bin
+	@$(CC) $(ASANFLAGS) $(OPTFLAGS) -I$(INC) test/*.c test/vendor/*.c src/*.c -o bin/memcheck.out $(LIBS)
+	@./bin/memcheck.out
 	@echo "Memory check passed"
 
 format:
