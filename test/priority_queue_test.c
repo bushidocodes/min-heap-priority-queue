@@ -41,7 +41,7 @@ tearDown(void)
 void
 initialize_should_set_first_free_to_1()
 {
-	TEST_ASSERT_EQUAL_INT32(1, pq.first_free);
+    TEST_ASSERT_EQUAL_UINT(1, pq.first_free);
 }
 
 void
@@ -53,7 +53,7 @@ initialize_should_set_highest_priority_to_ULONG_MAX()
 void
 length_should_be_one_less_than_first_free()
 {
-	TEST_ASSERT_EQUAL_INT32(pq.first_free - 1, priority_queue_length(&pq));
+    TEST_ASSERT_EQUAL_UINT(pq.first_free - 1, priority_queue_length(&pq));
 }
 
 void
@@ -61,8 +61,8 @@ enqueue_should_increment_first_free_and_length()
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
-	TEST_ASSERT_EQUAL_INT32(2, pq.first_free);
-	TEST_ASSERT_EQUAL_INT32(1, priority_queue_length(&pq));
+    TEST_ASSERT_EQUAL_UINT(2, pq.first_free);
+    TEST_ASSERT_EQUAL_UINT(1, priority_queue_length(&pq));
 	free(sandbox_one);
 }
 
@@ -91,7 +91,7 @@ enqueue_returns_neg1_on_full()
 
 	// Fill up the priority queue up to the max
 	// This is one less than MAX because a min heap does not use the 0th element
-	for (int i = 0; i < MAX - 1; i++) TEST_ASSERT_EQUAL_INT32(0, priority_queue_enqueue(&pq, sandbox_one));
+    for (size_t i = 0; i < MAX - 1; i++) TEST_ASSERT_EQUAL_INT32(0, priority_queue_enqueue(&pq, sandbox_one));
 
 	// And then add one more
 	TEST_ASSERT_EQUAL_INT32(-1, priority_queue_enqueue(&pq, sandbox_one));
