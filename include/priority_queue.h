@@ -16,14 +16,14 @@ typedef unsigned long long int (*priority_queue_get_priority_t)(void *element);
 struct priority_queue {
 	// We assume that priority is expressed in terms of a 64 bit unsigned integral
 	unsigned long long int        highest_priority;
-	void *                        items[MAX];
+	void                         *items[MAX];
 	int                           first_free;
 	priority_queue_get_priority_t get_priority;
 };
 
-void  priority_queue_initialize(struct priority_queue *self, priority_queue_get_priority_t get_priority);
-int   priority_queue_enqueue(struct priority_queue *self, void *value);
-void *priority_queue_dequeue(struct priority_queue *self);
-int   priority_queue_length(struct priority_queue *self);
+void  priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority);
+int   priority_queue_enqueue(struct priority_queue *const self, void *value);
+void *priority_queue_dequeue(struct priority_queue *const self);
+int   priority_queue_length(const struct priority_queue *const self);
 
 #endif /* PRIORITY_QUEUE_H */
