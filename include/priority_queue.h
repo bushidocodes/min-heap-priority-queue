@@ -3,6 +3,8 @@
 
 #define MAX 4096
 
+#include <stddef.h>
+
 /**
  * How to get the priority out of the generic element
  * We assume priority is expressed as an unsigned 64-bit integer (i.e. cycles or
@@ -17,13 +19,13 @@ struct priority_queue {
 	// We assume that priority is expressed in terms of a 64 bit unsigned integral
 	unsigned long long int        highest_priority;
 	void                         *items[MAX];
-	int                           first_free;
+	size_t                        first_free;
 	priority_queue_get_priority_t get_priority;
 };
 
-void  priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority);
-int   priority_queue_enqueue(struct priority_queue *const self, void *value);
-void *priority_queue_dequeue(struct priority_queue *const self);
-int   priority_queue_length(const struct priority_queue *const self);
+void   priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority);
+int    priority_queue_enqueue(struct priority_queue *const self, void *value);
+void  *priority_queue_dequeue(struct priority_queue *const self);
+size_t priority_queue_length(const struct priority_queue *const self);
 
 #endif /* PRIORITY_QUEUE_H */

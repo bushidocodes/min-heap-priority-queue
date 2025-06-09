@@ -36,7 +36,7 @@ priority_queue_percolate_up(struct priority_queue *const self)
 	assert(self != NULL);
 	assert(self->get_priority != NULL);
 
-	for (int i = self->first_free - 1;
+	for (size_t i = self->first_free - 1;
 	     i / 2 != 0 && self->get_priority(self->items[i]) < self->get_priority(self->items[i / 2]); i /= 2) {
 		void *temp         = self->items[i / 2];
 		self->items[i / 2] = self->items[i];
@@ -52,15 +52,15 @@ priority_queue_percolate_up(struct priority_queue *const self)
  * @param parent_index
  * @returns the index of the smallest child
  */
-static inline int
-priority_queue_find_smallest_child(const struct priority_queue *const self, int parent_index)
+static inline size_t
+priority_queue_find_smallest_child(const struct priority_queue *const self, size_t parent_index)
 {
 	assert(self != NULL);
 	assert(parent_index >= 1 && parent_index < self->first_free);
 	assert(self->get_priority != NULL);
 
-	int left_child_index  = 2 * parent_index;
-	int right_child_index = 2 * parent_index + 1;
+	size_t left_child_index  = 2 * parent_index;
+	size_t right_child_index = 2 * parent_index + 1;
 	assert(self->items[left_child_index] != NULL);
 
 	// If we don't have a right child or the left child is smaller, return it
@@ -86,10 +86,10 @@ priority_queue_percolate_down(struct priority_queue *const self)
 	assert(self != NULL);
 	assert(self->get_priority != NULL);
 
-	int parent_index     = 1;
-	int left_child_index = 2 * parent_index;
+	size_t parent_index     = 1;
+	size_t left_child_index = 2 * parent_index;
 	while (left_child_index >= 2 && left_child_index < self->first_free) {
-		int smallest_child_index = priority_queue_find_smallest_child(self, parent_index);
+		size_t smallest_child_index = priority_queue_find_smallest_child(self, parent_index);
 		// Once the parent is equal to or less than its smallest child, break;
 		if (self->get_priority(self->items[parent_index])
 		    <= self->get_priority(self->items[smallest_child_index]))
@@ -132,7 +132,7 @@ priority_queue_initialize(struct priority_queue *const self, priority_queue_get_
  * @param self the priority_queue
  * @returns the number of elements in the priority queue
  **/
-int
+size_t
 priority_queue_length(const struct priority_queue *const self)
 {
 	assert(self != NULL);
