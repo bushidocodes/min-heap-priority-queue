@@ -15,7 +15,7 @@
  * @return 0 on success. -1 when priority queue is full
  **/
 static inline int
-priority_queue_append(struct priority_queue *self, void *new_item)
+priority_queue_append(struct priority_queue *const self, void *new_item)
 {
 	assert(self != NULL);
 
@@ -31,7 +31,7 @@ priority_queue_append(struct priority_queue *self, void *new_item)
  * @param self the priority queue
  */
 static inline void
-priority_queue_percolate_up(struct priority_queue *self)
+priority_queue_percolate_up(struct priority_queue *const self)
 {
 	assert(self != NULL);
 	assert(self->get_priority != NULL);
@@ -53,7 +53,7 @@ priority_queue_percolate_up(struct priority_queue *self)
  * @returns the index of the smallest child
  */
 static inline int
-priority_queue_find_smallest_child(struct priority_queue *self, int parent_index)
+priority_queue_find_smallest_child(const struct priority_queue *const self, int parent_index)
 {
 	assert(self != NULL);
 	assert(parent_index >= 1 && parent_index < self->first_free);
@@ -81,7 +81,7 @@ priority_queue_find_smallest_child(struct priority_queue *self, int parent_index
  * @param self the priority queue
  */
 static inline void
-priority_queue_percolate_down(struct priority_queue *self)
+priority_queue_percolate_down(struct priority_queue *const self)
 {
 	assert(self != NULL);
 	assert(self->get_priority != NULL);
@@ -115,7 +115,7 @@ priority_queue_percolate_down(struct priority_queue *self)
  *element
  **/
 void
-priority_queue_initialize(struct priority_queue *self, priority_queue_get_priority_t get_priority)
+priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority)
 {
 	assert(self != NULL);
 	assert(get_priority != NULL);
@@ -133,7 +133,7 @@ priority_queue_initialize(struct priority_queue *self, priority_queue_get_priori
  * @returns the number of elements in the priority queue
  **/
 int
-priority_queue_length(struct priority_queue *self)
+priority_queue_length(const struct priority_queue *const self)
 {
 	assert(self != NULL);
 
@@ -146,7 +146,7 @@ priority_queue_length(struct priority_queue *self)
  * @returns 0 on success. -1 when priority queue is full
  **/
 int
-priority_queue_enqueue(struct priority_queue *self, void *value)
+priority_queue_enqueue(struct priority_queue *const self, void *value)
 {
 	assert(self != NULL);
 
@@ -165,7 +165,7 @@ priority_queue_enqueue(struct priority_queue *self, void *value)
  * @returns The head of the priority queue or NULL when empty
  **/
 void *
-priority_queue_dequeue(struct priority_queue *self)
+priority_queue_dequeue(struct priority_queue *const self)
 {
 	assert(self != NULL);
 	assert(self->get_priority != NULL);
