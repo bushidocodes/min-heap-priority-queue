@@ -16,16 +16,15 @@
 /**
  * How to get the priority out of the generic element
  * We assume priority is expressed as an unsigned 64-bit integer (i.e. cycles or
- * UNIX time in ms). This is used to maintain a read replica of the highest
- * priority element that can be used to maintain a read replica
+ * UNIX time in ms). Used to maintain a cached copy of the minimum priority
+ * value currently in the heap.
  * @param element
  * @returns priority (a u64)
  **/
 typedef uint64_t (*priority_queue_get_priority_t)(void *element);
 
 struct priority_queue {
-	// We assume that priority is expressed in terms of a 64 bit unsigned integral
-	uint64_t                      highest_priority;
+	uint64_t                      min_priority; /* cached priority of the heap root */
 	void                         *items[MAX];
 	size_t                        first_free;
 	priority_queue_get_priority_t get_priority;

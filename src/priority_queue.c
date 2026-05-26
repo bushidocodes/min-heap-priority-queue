@@ -41,7 +41,7 @@ priority_queue_percolate_up(struct priority_queue *const self)
 		self->items[i / 2] = self->items[i];
 		self->items[i]     = temp;
 		// If percolated to highest priority, update highest priority
-		if (i / 2 == 1) self->highest_priority = self->get_priority(self->items[1]);
+		if (i / 2 == 1) self->min_priority = self->get_priority(self->items[1]);
 	}
 }
 
@@ -124,7 +124,7 @@ priority_queue_initialize(struct priority_queue *const self, priority_queue_get_
 	self->get_priority = get_priority;
 
 	// We're assuming a min-heap implementation, so set to larget possible value
-	self->highest_priority = UINT64_MAX;
+	self->min_priority = UINT64_MAX;
 }
 
 /**
@@ -139,7 +139,7 @@ priority_queue_clear(struct priority_queue *const self)
 
 	memset(self->items, 0, sizeof(void *) * MAX);
 	self->first_free       = 1;
-	self->highest_priority = UINT64_MAX;
+	self->min_priority = UINT64_MAX;
 }
 
 /**
@@ -182,7 +182,7 @@ priority_queue_enqueue(struct priority_queue *const self, void *value)
 		priority_queue_percolate_up(self);
 	} else {
 		// If this is the first element we add, update the highest priority
-		self->highest_priority = self->get_priority(value);
+		self->min_priority = self->get_priority(value);
 	}
 	return 0;
 }
@@ -208,9 +208,9 @@ priority_queue_dequeue(struct priority_queue *const self)
 	if (self->first_free > 2) priority_queue_percolate_down(self);
 
 	if (self->first_free > 1) {
-		self->highest_priority = self->get_priority(self->items[1]);
+		self->min_priority = self->get_priority(self->items[1]);
 	} else {
-		self->highest_priority = UINT64_MAX;
+		self->min_priority = UINT64_MAX;
 	}
 	return min;
 }
