@@ -19,7 +19,7 @@ sandbox_request_allocate(uint64_t absolute_deadline)
 }
 
 uint64_t
-sandbox_request_get_priority(void *element_raw)
+sandbox_request_get_key(void *element_raw)
 {
 	struct sandbox_request *element = (struct sandbox_request *)element_raw;
 	return element->absolute_deadline;
@@ -30,7 +30,7 @@ struct priority_queue pq;
 void
 setUp(void)
 {
-	priority_queue_initialize(&pq, sandbox_request_get_priority);
+	priority_queue_initialize(&pq, sandbox_request_get_key);
 }
 
 void
@@ -45,9 +45,9 @@ initialize_should_set_first_free_to_1(void)
 }
 
 void
-initialize_should_set_highest_priority_to_UINT64_MAX(void)
+initialize_should_set_min_key_to_UINT64_MAX(void)
 {
-	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.min_key);
 }
 
 void
@@ -67,11 +67,11 @@ enqueue_should_increment_first_free_and_length(void)
 }
 
 void
-enqueue_first_call_should_set_highest_priority(void)
+enqueue_first_call_should_set_min_key(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_one));
-	TEST_ASSERT_EQUAL_INT32(10, pq.highest_priority);
+	TEST_ASSERT_EQUAL_INT32(10, pq.min_key);
 	free(sandbox_one);
 }
 
@@ -108,13 +108,13 @@ dequeue_on_empty_returns_null(void)
 void
 dequeue_last_element_should_set_UINT64_MAX(void)
 {
-	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.min_key);
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_one));
-	TEST_ASSERT_LESS_THAN_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_LESS_THAN_UINT64(UINT64_MAX, pq.min_key);
 	priority_queue_dequeue(&pq);
 	free(sandbox_one);
-	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.min_key);
 }
 
 void
@@ -132,20 +132,20 @@ dequeue_should_return_in_priority_order(void)
 	struct sandbox_request *sandbox_7 = sandbox_request_allocate(7);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_7));
 	TEST_ASSERT_EQUAL_PTR(sandbox_7, pq.items[1]);
-	TEST_ASSERT_EQUAL_UINT64(7, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(7, pq.min_key);
 
 	struct sandbox_request *sandbox_9 = sandbox_request_allocate(9);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_9));
 	TEST_ASSERT_EQUAL_PTR(sandbox_7, pq.items[1]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_9, pq.items[2]);
-	TEST_ASSERT_EQUAL_UINT64(7, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(7, pq.min_key);
 
 	struct sandbox_request *sandbox_5 = sandbox_request_allocate(5);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_5));
 	TEST_ASSERT_EQUAL_PTR(sandbox_5, pq.items[1]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_9, pq.items[2]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_7, pq.items[3]);
-	TEST_ASSERT_EQUAL_UINT64(5, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(5, pq.min_key);
 
 	struct sandbox_request *sandbox_11 = sandbox_request_allocate(11);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_11));
@@ -153,42 +153,42 @@ dequeue_should_return_in_priority_order(void)
 	TEST_ASSERT_EQUAL_PTR(sandbox_9, pq.items[2]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_7, pq.items[3]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_11, pq.items[4]);
-	TEST_ASSERT_EQUAL_UINT64(5, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(5, pq.min_key);
 
 	struct sandbox_request *sandbox_2 = sandbox_request_allocate(2);
 	TEST_ASSERT_EQUAL_INT(0, priority_queue_enqueue(&pq, sandbox_2));
 
 	struct sandbox_request *state1[] = { NULL, sandbox_2, sandbox_5, sandbox_7, sandbox_11, sandbox_9 };
 	TEST_ASSERT_EQUAL_PTR_ARRAY(state1, pq.items, 6);
-	TEST_ASSERT_EQUAL_UINT64(2, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(2, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(sandbox_2, priority_queue_dequeue(&pq));
 	free(sandbox_2);
 	struct sandbox_request *state2[] = { NULL, sandbox_5, sandbox_9, sandbox_7, sandbox_11 };
 	TEST_ASSERT_EQUAL_PTR_ARRAY(state2, pq.items, 5);
-	TEST_ASSERT_EQUAL_UINT64(5, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(5, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(sandbox_5, priority_queue_dequeue(&pq));
 	free(sandbox_5);
 	struct sandbox_request *state3[] = { NULL, sandbox_7, sandbox_9, sandbox_11 };
 	TEST_ASSERT_EQUAL_PTR_ARRAY(state3, pq.items, 4);
-	TEST_ASSERT_EQUAL_UINT64(7, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(7, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(sandbox_7, priority_queue_dequeue(&pq));
 	free(sandbox_7);
 	TEST_ASSERT_EQUAL_PTR(sandbox_9, pq.items[1]);
 	TEST_ASSERT_EQUAL_PTR(sandbox_11, pq.items[2]);
-	TEST_ASSERT_EQUAL_UINT64(9, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(9, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(sandbox_9, priority_queue_dequeue(&pq));
 	free(sandbox_9);
 	TEST_ASSERT_EQUAL_PTR(sandbox_11, pq.items[1]);
-	TEST_ASSERT_EQUAL_UINT64(11, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(11, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(sandbox_11, priority_queue_dequeue(&pq));
 	free(sandbox_11);
 	TEST_ASSERT_EQUAL_PTR(NULL, pq.items[1]);
-	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.min_key);
 
 	TEST_ASSERT_EQUAL_PTR(NULL, priority_queue_dequeue(&pq));
 }
@@ -256,16 +256,16 @@ clear_empties_queue(void)
 	priority_queue_clear(&pq);
 
 	TEST_ASSERT_TRUE(priority_queue_is_empty(&pq));
-	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.min_key);
 	free(sandbox_one);
 	free(sandbox_two);
 }
 
 void
-clear_preserves_get_priority_callback(void)
+clear_preserves_get_key_callback(void)
 {
 	priority_queue_clear(&pq);
-	TEST_ASSERT_EQUAL_PTR(sandbox_request_get_priority, pq.get_priority);
+	TEST_ASSERT_EQUAL_PTR(sandbox_request_get_key, pq.get_key);
 }
 
 void
@@ -289,9 +289,9 @@ main(void)
 {
 	UnityBegin("priority_queue_test.c");
 	RUN_TEST(initialize_should_set_first_free_to_1);
-	RUN_TEST(initialize_should_set_highest_priority_to_UINT64_MAX);
+	RUN_TEST(initialize_should_set_min_key_to_UINT64_MAX);
 	RUN_TEST(length_should_be_one_less_than_first_free);
-	RUN_TEST(enqueue_first_call_should_set_highest_priority);
+	RUN_TEST(enqueue_first_call_should_set_min_key);
 	RUN_TEST(enqueue_should_increment_first_free_and_length);
 	RUN_TEST(enqueue_first_call_should_set_index_1);
 	RUN_TEST(enqueue_returns_neg1_on_full);
@@ -306,7 +306,7 @@ main(void)
 	RUN_TEST(is_full_returns_false_on_empty_queue);
 	RUN_TEST(is_full_returns_true_when_at_capacity);
 	RUN_TEST(clear_empties_queue);
-	RUN_TEST(clear_preserves_get_priority_callback);
+	RUN_TEST(clear_preserves_get_key_callback);
 	RUN_TEST(clear_allows_reuse);
 
 	return UnityEnd();
