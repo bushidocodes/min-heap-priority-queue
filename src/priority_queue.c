@@ -18,7 +18,7 @@ priority_queue_append(struct priority_queue *const self, void *new_item)
 {
 	assert(self != NULL);
 
-	if (self->first_free >= MAX) return -1;
+	if (self->first_free >= PRIORITY_QUEUE_CAPACITY) return -1;
 
 	self->items[self->first_free] = new_item;
 	self->first_free++;
@@ -118,7 +118,7 @@ priority_queue_initialize(struct priority_queue *const self, priority_queue_get_
 	assert(self != NULL);
 	assert(get_key != NULL);
 
-	memset(self->items, 0, sizeof(void *) * MAX);
+	memset(self->items, 0, sizeof(void *) * PRIORITY_QUEUE_CAPACITY);
 	self->first_free   = 1;
 	self->get_key = get_key;
 
@@ -135,7 +135,7 @@ priority_queue_clear(struct priority_queue *const self)
 {
 	assert(self != NULL);
 
-	memset(self->items, 0, sizeof(void *) * MAX);
+	memset(self->items, 0, sizeof(void *) * PRIORITY_QUEUE_CAPACITY);
 	self->first_free       = 1;
 	self->min_key = UINT64_MAX;
 }
@@ -234,5 +234,5 @@ priority_queue_is_full(const struct priority_queue *const self)
 {
 	assert(self != NULL);
 
-	return self->first_free >= MAX;
+	return self->first_free >= PRIORITY_QUEUE_CAPACITY;
 }

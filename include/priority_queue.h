@@ -1,7 +1,9 @@
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
-#define MAX 4096
+#ifndef PRIORITY_QUEUE_CAPACITY
+#define PRIORITY_QUEUE_CAPACITY 4096
+#endif
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -25,7 +27,7 @@ typedef uint64_t (*priority_queue_get_key_t)(void *element);
 
 struct priority_queue {
 	uint64_t                      min_key; /* cached key of the heap root */
-	void                         *items[MAX];
+	void                         *items[PRIORITY_QUEUE_CAPACITY];
 	size_t                        first_free;
 	priority_queue_get_key_t get_key;
 };

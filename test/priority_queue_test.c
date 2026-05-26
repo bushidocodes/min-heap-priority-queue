@@ -90,8 +90,8 @@ enqueue_returns_neg1_on_full(void)
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 
 	// Fill up the priority queue up to the max
-	// This is one less than MAX because a min heap does not use the 0th element
-	for (size_t i = 0; i < MAX - 1; i++) TEST_ASSERT_EQUAL_INT32(0, priority_queue_enqueue(&pq, sandbox_one));
+	// This is one less than PRIORITY_QUEUE_CAPACITY because a min heap does not use the 0th element
+	for (size_t i = 0; i < PRIORITY_QUEUE_CAPACITY - 1; i++) TEST_ASSERT_EQUAL_INT32(0, priority_queue_enqueue(&pq, sandbox_one));
 
 	// And then add one more
 	TEST_ASSERT_EQUAL_INT32(-1, priority_queue_enqueue(&pq, sandbox_one));
@@ -239,7 +239,7 @@ void
 is_full_returns_true_when_at_capacity(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
-	for (size_t i = 0; i < MAX - 1; i++) (void)priority_queue_enqueue(&pq, sandbox_one);
+	for (size_t i = 0; i < PRIORITY_QUEUE_CAPACITY - 1; i++) (void)priority_queue_enqueue(&pq, sandbox_one);
 	TEST_ASSERT_TRUE(priority_queue_is_full(&pq));
 	free(sandbox_one);
 }
