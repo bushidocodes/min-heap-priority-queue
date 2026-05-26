@@ -140,6 +140,19 @@ priority_queue_length(const struct priority_queue *const self)
 }
 
 /**
+ * @param self the priority queue
+ * @returns the minimum-priority element without removing it, or NULL if empty
+ **/
+void *
+priority_queue_peek(const struct priority_queue *const self)
+{
+	assert(self != NULL);
+
+	if (self->first_free == 1) return NULL;
+	return self->items[1];
+}
+
+/**
  * @param self - the priority queue we want to add to
  * @param value - the value we want to add
  * @returns 0 on success. -1 when priority queue is full

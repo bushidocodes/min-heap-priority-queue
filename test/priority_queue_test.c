@@ -193,6 +193,27 @@ dequeue_should_return_in_priority_order(void)
 	TEST_ASSERT_EQUAL_PTR(NULL, priority_queue_dequeue(&pq));
 }
 
+void
+peek_on_empty_returns_null(void)
+{
+	TEST_ASSERT_NULL(priority_queue_peek(&pq));
+}
+
+void
+peek_returns_min_without_removing(void)
+{
+	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
+	struct sandbox_request *sandbox_two = sandbox_request_allocate(5);
+	priority_queue_enqueue(&pq, sandbox_one);
+	priority_queue_enqueue(&pq, sandbox_two);
+
+	TEST_ASSERT_EQUAL_PTR(sandbox_two, priority_queue_peek(&pq));
+	TEST_ASSERT_EQUAL_UINT(2, priority_queue_length(&pq));
+
+	free(sandbox_one);
+	free(sandbox_two);
+}
+
 int
 main(void)
 {
@@ -208,6 +229,8 @@ main(void)
 	RUN_TEST(dequeue_last_element_should_set_ULONG_MAX);
 	RUN_TEST(dequeue_of_one);
 	RUN_TEST(dequeue_should_return_in_priority_order);
+	RUN_TEST(peek_on_empty_returns_null);
+	RUN_TEST(peek_returns_min_without_removing);
 
 	return UnityEnd();
 }
