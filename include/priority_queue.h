@@ -7,6 +7,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#if defined(__GNUC__) || defined(__clang__)
+#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#else
+#define WARN_UNUSED_RESULT
+#endif
+
 /**
  * How to get the priority out of the generic element
  * We assume priority is expressed as an unsigned 64-bit integer (i.e. cycles or
@@ -27,7 +33,7 @@ struct priority_queue {
 
 void   priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority);
 void   priority_queue_clear(struct priority_queue *const self);
-int    priority_queue_enqueue(struct priority_queue *const self, void *value);
+WARN_UNUSED_RESULT int priority_queue_enqueue(struct priority_queue *const self, void *value);
 void  *priority_queue_dequeue(struct priority_queue *const self);
 void  *priority_queue_peek(const struct priority_queue *const self);
 size_t priority_queue_length(const struct priority_queue *const self);
