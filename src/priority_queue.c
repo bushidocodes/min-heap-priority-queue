@@ -128,6 +128,21 @@ priority_queue_initialize(struct priority_queue *const self, priority_queue_get_
 }
 
 /**
+ * Removes all elements from the priority queue, preserving the get_priority
+ * callback so the queue can be reused without reinitializing.
+ * @param self the priority queue to clear
+ **/
+void
+priority_queue_clear(struct priority_queue *const self)
+{
+	assert(self != NULL);
+
+	memset(self->items, 0, sizeof(void *) * MAX);
+	self->first_free      = 1;
+	self->highest_priority = ULONG_MAX;
+}
+
+/**
  * @param self the priority_queue
  * @returns the number of elements in the priority queue
  **/
