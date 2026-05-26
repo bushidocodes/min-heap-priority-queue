@@ -19,7 +19,7 @@ typedef uint64_t (*priority_queue_get_priority_t)(void *element);
 
 struct priority_queue {
 	// We assume that priority is expressed in terms of a 64 bit unsigned integral
-	uint64_t        highest_priority;
+	uint64_t                      highest_priority;
 	void                         *items[MAX];
 	size_t                        first_free;
 	priority_queue_get_priority_t get_priority;

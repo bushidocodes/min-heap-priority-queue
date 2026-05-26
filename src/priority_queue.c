@@ -138,7 +138,7 @@ priority_queue_clear(struct priority_queue *const self)
 	assert(self != NULL);
 
 	memset(self->items, 0, sizeof(void *) * MAX);
-	self->first_free      = 1;
+	self->first_free       = 1;
 	self->highest_priority = UINT64_MAX;
 }
 
