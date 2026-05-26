@@ -3,6 +3,7 @@
 
 #define MAX 4096
 
+#include <stdbool.h>
 #include <stddef.h>
 
 /**
@@ -28,5 +29,7 @@ int    priority_queue_enqueue(struct priority_queue *const self, void *value);
 void  *priority_queue_dequeue(struct priority_queue *const self);
 void  *priority_queue_peek(const struct priority_queue *const self);
 size_t priority_queue_length(const struct priority_queue *const self);
+bool   priority_queue_is_empty(const struct priority_queue *const self);
+bool   priority_queue_is_full(const struct priority_queue *const self);
 
 #endif /* PRIORITY_QUEUE_H */

@@ -199,3 +199,27 @@ priority_queue_dequeue(struct priority_queue *const self)
 	}
 	return min;
 }
+
+/**
+ * @param self the priority queue
+ * @returns true if the priority queue contains no elements
+ **/
+bool
+priority_queue_is_empty(const struct priority_queue *const self)
+{
+	assert(self != NULL);
+
+	return self->first_free == 1;
+}
+
+/**
+ * @param self the priority queue
+ * @returns true if the priority queue has reached maximum capacity
+ **/
+bool
+priority_queue_is_full(const struct priority_queue *const self)
+{
+	assert(self != NULL);
+
+	return self->first_free >= MAX;
+}
