@@ -5,6 +5,10 @@
 #define PRIORITY_QUEUE_CAPACITY 4096
 #endif
 
+#if PRIORITY_QUEUE_CAPACITY < 2
+#error "PRIORITY_QUEUE_CAPACITY must be at least 2 (index 0 is unused in the 1-indexed heap)"
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
