@@ -1,6 +1,6 @@
 #include "priority_queue.h"
 #include <assert.h>
-#include <limits.h>
+#include <stdint.h>
 #include <string.h>
 
 /****************************
@@ -124,7 +124,7 @@ priority_queue_initialize(struct priority_queue *const self, priority_queue_get_
 	self->get_priority = get_priority;
 
 	// We're assuming a min-heap implementation, so set to larget possible value
-	self->highest_priority = ULONG_MAX;
+	self->highest_priority = UINT64_MAX;
 }
 
 /**
@@ -138,8 +138,8 @@ priority_queue_clear(struct priority_queue *const self)
 	assert(self != NULL);
 
 	memset(self->items, 0, sizeof(void *) * MAX);
-	self->first_free      = 1;
-	self->highest_priority = ULONG_MAX;
+	self->first_free       = 1;
+	self->highest_priority = UINT64_MAX;
 }
 
 /**
@@ -210,7 +210,7 @@ priority_queue_dequeue(struct priority_queue *const self)
 	if (self->first_free > 1) {
 		self->highest_priority = self->get_priority(self->items[1]);
 	} else {
-		self->highest_priority = ULONG_MAX;
+		self->highest_priority = UINT64_MAX;
 	}
 	return min;
 }

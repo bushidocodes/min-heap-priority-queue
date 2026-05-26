@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,18 +7,18 @@
 #include "priority_queue.h"
 
 struct sandbox_request {
-	unsigned long long int absolute_deadline;
+	uint64_t absolute_deadline;
 };
 
 struct sandbox_request *
-sandbox_request_allocate(unsigned long long int absolute_deadline)
+sandbox_request_allocate(uint64_t absolute_deadline)
 {
 	struct sandbox_request *sandbox_request = malloc(sizeof(struct sandbox_request));
 	sandbox_request->absolute_deadline      = absolute_deadline;
 	return sandbox_request;
 }
 
-unsigned long long int
+uint64_t
 sandbox_request_get_priority(void *element_raw)
 {
 	struct sandbox_request *element = (struct sandbox_request *)element_raw;
@@ -45,9 +45,9 @@ initialize_should_set_first_free_to_1(void)
 }
 
 void
-initialize_should_set_highest_priority_to_ULONG_MAX(void)
+initialize_should_set_highest_priority_to_UINT64_MAX(void)
 {
-	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
 }
 
 void
@@ -106,15 +106,15 @@ dequeue_on_empty_returns_null(void)
 }
 
 void
-dequeue_last_element_should_set_ULONG_MAX(void)
+dequeue_last_element_should_set_UINT64_MAX(void)
 {
-	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
-	TEST_ASSERT_LESS_THAN_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_LESS_THAN_UINT64(UINT64_MAX, pq.highest_priority);
 	priority_queue_dequeue(&pq);
 	free(sandbox_one);
-	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
 }
 
 void
@@ -188,7 +188,7 @@ dequeue_should_return_in_priority_order(void)
 	TEST_ASSERT_EQUAL_PTR(sandbox_11, priority_queue_dequeue(&pq));
 	free(sandbox_11);
 	TEST_ASSERT_EQUAL_PTR(NULL, pq.items[1]);
-	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
 
 	TEST_ASSERT_EQUAL_PTR(NULL, priority_queue_dequeue(&pq));
 }
@@ -256,7 +256,7 @@ clear_empties_queue(void)
 	priority_queue_clear(&pq);
 
 	TEST_ASSERT_TRUE(priority_queue_is_empty(&pq));
-	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	TEST_ASSERT_EQUAL_UINT64(UINT64_MAX, pq.highest_priority);
 	free(sandbox_one);
 	free(sandbox_two);
 }
@@ -289,14 +289,14 @@ main(void)
 {
 	UnityBegin("priority_queue_test.c");
 	RUN_TEST(initialize_should_set_first_free_to_1);
-	RUN_TEST(initialize_should_set_highest_priority_to_ULONG_MAX);
+	RUN_TEST(initialize_should_set_highest_priority_to_UINT64_MAX);
 	RUN_TEST(length_should_be_one_less_than_first_free);
 	RUN_TEST(enqueue_first_call_should_set_highest_priority);
 	RUN_TEST(enqueue_should_increment_first_free_and_length);
 	RUN_TEST(enqueue_first_call_should_set_index_1);
 	RUN_TEST(enqueue_returns_neg1_on_full);
 	RUN_TEST(dequeue_on_empty_returns_null);
-	RUN_TEST(dequeue_last_element_should_set_ULONG_MAX);
+	RUN_TEST(dequeue_last_element_should_set_UINT64_MAX);
 	RUN_TEST(dequeue_of_one);
 	RUN_TEST(dequeue_should_return_in_priority_order);
 	RUN_TEST(peek_on_empty_returns_null);
