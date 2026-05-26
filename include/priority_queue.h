@@ -26,6 +26,7 @@ struct priority_queue {
 void   priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority);
 int    priority_queue_enqueue(struct priority_queue *const self, void *value);
 void  *priority_queue_dequeue(struct priority_queue *const self);
+void  *priority_queue_peek(const struct priority_queue *const self);
 size_t priority_queue_length(const struct priority_queue *const self);
 
 #endif /* PRIORITY_QUEUE_H */
