@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 /**
  * How to get the priority out of the generic element
@@ -14,11 +15,11 @@
  * @param element
  * @returns priority (a u64)
  **/
-typedef unsigned long long int (*priority_queue_get_priority_t)(void *element);
+typedef uint64_t (*priority_queue_get_priority_t)(void *element);
 
 struct priority_queue {
 	// We assume that priority is expressed in terms of a 64 bit unsigned integral
-	unsigned long long int        highest_priority;
+	uint64_t        highest_priority;
 	void                         *items[MAX];
 	size_t                        first_free;
 	priority_queue_get_priority_t get_priority;
