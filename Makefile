@@ -3,7 +3,7 @@ INC=./include/
 OPTFLAGS = -g
 WARNFLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror
 
-ASANFLAGS  = -fsanitize=address
+ASANFLAGS  = -fsanitize=address,undefined
 ASANFLAGS += -fno-common
 ASANFLAGS += -fno-omit-frame-pointer
 
