@@ -33,15 +33,15 @@ static inline void
 priority_queue_percolate_up(struct priority_queue *const self)
 {
 	assert(self != NULL);
-	assert(self->get_priority != NULL);
+	assert(self->get_key != NULL);
 
 	for (size_t i = self->first_free - 1;
-	     i / 2 != 0 && self->get_priority(self->items[i]) < self->get_priority(self->items[i / 2]); i /= 2) {
+	     i / 2 != 0 && self->get_key(self->items[i]) < self->get_key(self->items[i / 2]); i /= 2) {
 		void *temp         = self->items[i / 2];
 		self->items[i / 2] = self->items[i];
 		self->items[i]     = temp;
 		// If percolated to highest priority, update highest priority
-		if (i / 2 == 1) self->min_priority = self->get_priority(self->items[1]);
+		if (i / 2 == 1) self->min_key = self->get_key(self->items[1]);
 	}
 }
 
@@ -56,7 +56,7 @@ priority_queue_find_smallest_child(const struct priority_queue *const self, size
 {
 	assert(self != NULL);
 	assert(parent_index >= 1 && parent_index < self->first_free);
-	assert(self->get_priority != NULL);
+	assert(self->get_key != NULL);
 
 	size_t left_child_index  = 2 * parent_index;
 	size_t right_child_index = 2 * parent_index + 1;
@@ -65,8 +65,8 @@ priority_queue_find_smallest_child(const struct priority_queue *const self, size
 	// If we don't have a right child or the left child is smaller, return it
 	if (right_child_index == self->first_free) {
 		return left_child_index;
-	} else if (self->get_priority(self->items[left_child_index])
-	           < self->get_priority(self->items[right_child_index])) {
+	} else if (self->get_key(self->items[left_child_index])
+	           < self->get_key(self->items[right_child_index])) {
 		return left_child_index;
 	} else {
 		// Otherwise, return the right child
@@ -83,15 +83,15 @@ static inline void
 priority_queue_percolate_down(struct priority_queue *const self)
 {
 	assert(self != NULL);
-	assert(self->get_priority != NULL);
+	assert(self->get_key != NULL);
 
 	size_t parent_index     = 1;
 	size_t left_child_index = 2 * parent_index;
 	while (left_child_index >= 2 && left_child_index < self->first_free) {
 		size_t smallest_child_index = priority_queue_find_smallest_child(self, parent_index);
 		// Once the parent is equal to or less than its smallest child, break;
-		if (self->get_priority(self->items[parent_index])
-		    <= self->get_priority(self->items[smallest_child_index]))
+		if (self->get_key(self->items[parent_index])
+		    <= self->get_key(self->items[smallest_child_index]))
 			break;
 		// Otherwise, swap and continue down the tree
 		void *temp                        = self->items[smallest_child_index];
@@ -110,25 +110,23 @@ priority_queue_percolate_down(struct priority_queue *const self)
 /**
  * Initialized the Priority Queue Data structure
  * @param self the priority_queue to initialize
- * @param get_priority pointer to a function that returns the priority of an
- *element
+ * @param get_key pointer to a function that extracts the ordering key from an element
  **/
 void
-priority_queue_initialize(struct priority_queue *const self, priority_queue_get_priority_t get_priority)
+priority_queue_initialize(struct priority_queue *const self, priority_queue_get_key_t get_key)
 {
 	assert(self != NULL);
-	assert(get_priority != NULL);
+	assert(get_key != NULL);
 
 	memset(self->items, 0, sizeof(void *) * MAX);
 	self->first_free   = 1;
-	self->get_priority = get_priority;
+	self->get_key = get_key;
 
-	// We're assuming a min-heap implementation, so set to larget possible value
-	self->min_priority = UINT64_MAX;
+	self->min_key = UINT64_MAX;
 }
 
 /**
- * Removes all elements from the priority queue, preserving the get_priority
+ * Removes all elements from the priority queue, preserving the get_key
  * callback so the queue can be reused without reinitializing.
  * @param self the priority queue to clear
  **/
@@ -139,7 +137,7 @@ priority_queue_clear(struct priority_queue *const self)
 
 	memset(self->items, 0, sizeof(void *) * MAX);
 	self->first_free       = 1;
-	self->min_priority = UINT64_MAX;
+	self->min_key = UINT64_MAX;
 }
 
 /**
@@ -182,7 +180,7 @@ priority_queue_enqueue(struct priority_queue *const self, void *value)
 		priority_queue_percolate_up(self);
 	} else {
 		// If this is the first element we add, update the highest priority
-		self->min_priority = self->get_priority(value);
+		self->min_key = self->get_key(value);
 	}
 	return 0;
 }
@@ -195,7 +193,7 @@ void *
 priority_queue_dequeue(struct priority_queue *const self)
 {
 	assert(self != NULL);
-	assert(self->get_priority != NULL);
+	assert(self->get_key != NULL);
 	// If first_free is 1, we're empty
 	if (self->first_free == 1) return NULL;
 
@@ -208,9 +206,9 @@ priority_queue_dequeue(struct priority_queue *const self)
 	if (self->first_free > 2) priority_queue_percolate_down(self);
 
 	if (self->first_free > 1) {
-		self->min_priority = self->get_priority(self->items[1]);
+		self->min_key = self->get_key(self->items[1]);
 	} else {
-		self->min_priority = UINT64_MAX;
+		self->min_key = UINT64_MAX;
 	}
 	return min;
 }
