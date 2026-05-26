@@ -9,14 +9,15 @@
 #error "PRIORITY_QUEUE_CAPACITY must be at least 2 (index 0 is unused in the 1-indexed heap)"
 #endif
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 /* Child indices are computed as 2*i and 2*i+1 using size_t arithmetic.
  * If PRIORITY_QUEUE_CAPACITY exceeds SIZE_MAX/2 the multiplication overflows. */
-_Static_assert(PRIORITY_QUEUE_CAPACITY <= SIZE_MAX / 2,
-               "PRIORITY_QUEUE_CAPACITY must be at most SIZE_MAX/2 to avoid size_t overflow in child index calculations");
+static_assert(PRIORITY_QUEUE_CAPACITY <= SIZE_MAX / 2,
+              "PRIORITY_QUEUE_CAPACITY must be at most SIZE_MAX/2 to avoid size_t overflow in child index calculations");
 
 #if defined(__GNUC__) || defined(__clang__)
 #define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
