@@ -11,7 +11,7 @@ struct sandbox_request {
 };
 
 struct sandbox_request *
-sandbox_request_allocate(int absolute_deadline)
+sandbox_request_allocate(unsigned long long int absolute_deadline)
 {
 	struct sandbox_request *sandbox_request = malloc(sizeof(struct sandbox_request));
 	sandbox_request->absolute_deadline      = absolute_deadline;
@@ -39,25 +39,25 @@ tearDown(void)
 }
 
 void
-initialize_should_set_first_free_to_1()
+initialize_should_set_first_free_to_1(void)
 {
 	TEST_ASSERT_EQUAL_UINT(1, pq.first_free);
 }
 
 void
-initialize_should_set_highest_priority_to_ULONG_MAX()
+initialize_should_set_highest_priority_to_ULONG_MAX(void)
 {
 	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
 }
 
 void
-length_should_be_one_less_than_first_free()
+length_should_be_one_less_than_first_free(void)
 {
 	TEST_ASSERT_EQUAL_UINT(pq.first_free - 1, priority_queue_length(&pq));
 }
 
 void
-enqueue_should_increment_first_free_and_length()
+enqueue_should_increment_first_free_and_length(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
@@ -67,7 +67,7 @@ enqueue_should_increment_first_free_and_length()
 }
 
 void
-enqueue_first_call_should_set_highest_priority()
+enqueue_first_call_should_set_highest_priority(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
@@ -76,7 +76,7 @@ enqueue_first_call_should_set_highest_priority()
 }
 
 void
-enqueue_first_call_should_set_index_1()
+enqueue_first_call_should_set_index_1(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
@@ -85,7 +85,7 @@ enqueue_first_call_should_set_index_1()
 }
 
 void
-enqueue_returns_neg1_on_full()
+enqueue_returns_neg1_on_full(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 
@@ -100,13 +100,13 @@ enqueue_returns_neg1_on_full()
 }
 
 void
-dequeue_on_empty_returns_null()
+dequeue_on_empty_returns_null(void)
 {
 	TEST_ASSERT_EQUAL_PTR(NULL, priority_queue_dequeue(&pq));
 }
 
 void
-dequeue_last_element_should_set_ULONG_MAX()
+dequeue_last_element_should_set_ULONG_MAX(void)
 {
 	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
@@ -118,7 +118,7 @@ dequeue_last_element_should_set_ULONG_MAX()
 }
 
 void
-dequeue_of_one()
+dequeue_of_one(void)
 {
 	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
 	priority_queue_enqueue(&pq, sandbox_one);
@@ -127,7 +127,7 @@ dequeue_of_one()
 }
 
 void
-dequeue_should_return_in_priority_order()
+dequeue_should_return_in_priority_order(void)
 {
 	struct sandbox_request *sandbox_7 = sandbox_request_allocate(7);
 	priority_queue_enqueue(&pq, sandbox_7);
