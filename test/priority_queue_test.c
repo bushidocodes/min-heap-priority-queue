@@ -244,6 +244,46 @@ is_full_returns_true_when_at_capacity(void)
 	free(sandbox_one);
 }
 
+void
+clear_empties_queue(void)
+{
+	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
+	struct sandbox_request *sandbox_two = sandbox_request_allocate(5);
+	priority_queue_enqueue(&pq, sandbox_one);
+	priority_queue_enqueue(&pq, sandbox_two);
+	TEST_ASSERT_FALSE(priority_queue_is_empty(&pq));
+
+	priority_queue_clear(&pq);
+
+	TEST_ASSERT_TRUE(priority_queue_is_empty(&pq));
+	TEST_ASSERT_EQUAL_UINT64(ULONG_MAX, pq.highest_priority);
+	free(sandbox_one);
+	free(sandbox_two);
+}
+
+void
+clear_preserves_get_priority_callback(void)
+{
+	priority_queue_clear(&pq);
+	TEST_ASSERT_EQUAL_PTR(sandbox_request_get_priority, pq.get_priority);
+}
+
+void
+clear_allows_reuse(void)
+{
+	struct sandbox_request *sandbox_one = sandbox_request_allocate(10);
+	priority_queue_enqueue(&pq, sandbox_one);
+	priority_queue_clear(&pq);
+
+	struct sandbox_request *sandbox_two = sandbox_request_allocate(5);
+	priority_queue_enqueue(&pq, sandbox_two);
+	TEST_ASSERT_EQUAL_PTR(sandbox_two, priority_queue_peek(&pq));
+	TEST_ASSERT_EQUAL_UINT(1, priority_queue_length(&pq));
+
+	free(sandbox_one);
+	free(sandbox_two);
+}
+
 int
 main(void)
 {
@@ -265,6 +305,9 @@ main(void)
 	RUN_TEST(is_empty_returns_false_after_enqueue);
 	RUN_TEST(is_full_returns_false_on_empty_queue);
 	RUN_TEST(is_full_returns_true_when_at_capacity);
+	RUN_TEST(clear_empties_queue);
+	RUN_TEST(clear_preserves_get_priority_callback);
+	RUN_TEST(clear_allows_reuse);
 
 	return UnityEnd();
 }
